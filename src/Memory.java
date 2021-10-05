@@ -1,4 +1,5 @@
 import java.lang.Math;
+import java.lang.Integer;
 
 public class Memory {
     private byte[] memory;
@@ -7,12 +8,12 @@ public class Memory {
         memory = new byte[(int) Math.pow(2, 16)];
     }
 
-    //    store a 8bit value in memory @ address
+    //    store a 8bit (byte) value in memory @ address
     public void store_8bit(int address, byte value){
         memory[address] = value;
     }
 
-    //    store a 16bit value in memory.
+    //    store a 16bit (byte) value in memory.
     //    first byte will be stored @ address,
     //    and second byte will be stored @ address+1
     public void store_16bit(int address, byte[] value){
