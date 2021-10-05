@@ -1,3 +1,5 @@
+import java.util.BitSet;
+
 public class Registers {
     private byte[][] gp_regs;
     private byte[][] sp_regs;
@@ -32,7 +34,11 @@ public class Registers {
         if (code < 16) {
             if (code == 0) {
                 if (code > 10) {
-                    sp_regs[code] = value;
+                    if(code == 9){
+                        sp_regs[code] = value;
+                    } else {
+                        throw new Exception("SP_Regs Error: Flag Register can't be used for storing values");
+                    }
                 } else {
                     throw new Exception("SP_Regs Error: R1" + code % 10 + " can't be accessed");
                 }
@@ -47,18 +53,49 @@ public class Registers {
     public byte[] load_spr(byte code) throws Exception{
         byte[] value;
         if(code < 16){
-            if(code == 0) {
-                if(code > 10){
+            if(code > 10){
+                if(code == 9){
                     value = sp_regs[code];
                 } else {
-                    throw new Exception("SP_Regs Error: R1" + code%10+" can't be accessed");
+                    throw new Exception("SP_Regs Error: Flag Register can't be used for loading values");
                 }
+
             } else {
-                throw new Exception("SP_Regs Error: R0 can't be used for storing value");
+                throw new Exception("SP_Regs Error: R1" + code%10+" can't be accessed");
             }
         } else {
-            throw new Exception("SP_Regs Error: can't access SPR to store value because Register Code is larger than 4bit");
+            throw new Exception("SP_Regs Error: can't access SPR to load value because Register Code is larger than 4bit");
         }
         return value;
+    }
+
+    //    set the flag register from index bit
+    public void set_flag(int index, boolean value) throws Exception{
+        if(index >3){
+            BitSet bits = BitSet.valueOf(sp_regs[9]);
+            bits.set(index,value);
+            sp_regs[9] = bits.toByteArray();
+        } else {
+            throw new Exception("SP_Regs Error: IndexOutOfBound Exception @ flag register");
+        }
+    }
+
+    //    set the flag register from bitset
+    public void set_flag(BitSet bits) throws Exception{
+        if(bits.length() >4){
+            sp_regs[9] = bits.toByteArray();
+        } else {
+            throw new Exception("SP_Regs Error: IndexOutOfBound Exception @ flag register");
+        }
+    }
+
+    //    get value of flag register
+    public BitSet get_flags(){
+        return BitSet.valueOf(sp_regs[9]);
+    }
+
+    //    clear the values of flag register
+    public void clear_flags(){
+        sp_regs[9] = new byte[2];
     }
 }
