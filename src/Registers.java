@@ -73,18 +73,14 @@ public class Registers {
     public void set_flag(int index, boolean value) throws Exception{
         if(index >3){
             //  Convert char value into byte array
-            byte[] b = new byte[2];
-            b[0] = (byte) sp_regs[9][0];
-            b[1] = (byte) sp_regs[9][1];
+            byte[] b = Convert.C2B(sp_regs[9]);
 
             //  convert the byte array into bitset
             BitSet bits = BitSet.valueOf(b);
             bits.set(index,value);
 
             // convert the bitset into byte array, then store the value as char
-            b = bits.toByteArray();
-            sp_regs[9][0] = (char) b[0];
-            sp_regs[9][1] = (char) b[1];
+            sp_regs[9] = Convert.B2C(bits.toByteArray());
         } else {
             throw new Exception("SP_Regs Error: IndexOutOfBound Exception @ flag register");
         }
@@ -93,9 +89,8 @@ public class Registers {
     //    set the flag register from bitset
     public void set_flag(BitSet bits) throws Exception{
         if(bits.length() >4){
-            byte[] b = bits.toByteArray();
-            sp_regs[9][0] = (char) b[0];
-            sp_regs[9][1] = (char) b[1];
+            // convert the bitset into byte array, then store the value as char
+            sp_regs[9] = Convert.B2C(bits.toByteArray());
         } else {
             throw new Exception("SP_Regs Error: IndexOutOfBound Exception @ flag register");
         }
@@ -103,9 +98,9 @@ public class Registers {
 
     //    get value of flag register
     public BitSet get_flags(){
-        byte[] b = new byte[2];
-        b[0] = (byte) sp_regs[9][0];
-        b[1] = (byte) sp_regs[9][1];
+        //  Convert char value into byte array
+        byte[] b = Convert.C2B(sp_regs[9]);
+
         return BitSet.valueOf(b);
     }
 
