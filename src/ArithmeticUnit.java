@@ -1,4 +1,4 @@
-public class ArithematicUnit {
+public class ArithmeticUnit {
 
     //    Add Two 16bit (2 bytes) value and return an int
     public int ADD(char[] n1,char[] n2){
