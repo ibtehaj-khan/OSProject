@@ -3,14 +3,14 @@ import java.lang.Math;
 public class Memory {
     private final int MAX_8BIT_VALUE = (int)Math.pow(2, 8);
     private final int MAX_16BIT_VALUE = (int)Math.pow(2, 16);
-    private byte[] memory;
+    private char[] memory;
 
     public Memory(){
-        memory = new byte[MAX_16BIT_VALUE];
+        memory = new char[MAX_16BIT_VALUE];
     }
 
-    //    store a 8bit (byte) value in memory @ address
-    public void store_8bit(int address, byte value) throws Exception{
+    //    store a 8bit (char) value in memory @ address
+    public void store_8bit(int address, char value) throws Exception{
 
         if(address < MAX_16BIT_VALUE){
             memory[address] = value;
@@ -19,10 +19,10 @@ public class Memory {
         }
     }
 
-    //    store a 16bit (byte) value in memory.
+    //    store a 16bit (2 bytes) value in memory.
     //    first byte will be stored @ address,
     //    and second byte will be stored @ address+1
-    public void store_16bit(int address, byte[] value) throws Exception{
+    public void store_16bit(int address, char[] value) throws Exception{
         if((address < MAX_16BIT_VALUE) && (address+1 < MAX_16BIT_VALUE)){
             memory[address] = value[0];
             memory[address+1] = value[1];
@@ -31,9 +31,9 @@ public class Memory {
         }
     }
 
-    //    return a 8bit value from the given address
-    public byte load_8bit(int address) throws Exception{
-        byte value;
+    //    return a 8bit (char) value from the given address
+    public char load_8bit(int address) throws Exception{
+        char value;
         if(address < MAX_16BIT_VALUE){
             value = memory[address];
         } else {
@@ -42,11 +42,11 @@ public class Memory {
         return value;
     }
 
-    //    return a 16bit value from the given address.
+    //    return a 16bit (2 chars) value from the given address.
     //    first byte will be loaded from address,
     //    and second byte will be loaded from address+1
-    public byte[] load_16bit(int address) throws Exception{
-        byte[] value = new byte[2];
+    public char[] load_16bit(int address) throws Exception{
+        char[] value = new char[2];
         if((address < MAX_16BIT_VALUE) && (address+1 < MAX_16BIT_VALUE)) {
             value[0] = memory[address];
             value[1] = memory[address + 1];
