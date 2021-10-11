@@ -211,9 +211,4 @@ public class Instructions {
     public void NOOP(){
 
     }
-
-    //    Terminate the Process
-    public void END(){
-
-    }
 }

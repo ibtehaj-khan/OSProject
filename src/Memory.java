@@ -1,7 +1,6 @@
 import java.lang.Math;
 
 public class Memory {
-    private final int MAX_8BIT_VALUE = (int)Math.pow(2, 8);
     private final int MAX_16BIT_VALUE = (int)Math.pow(2, 16);
     private char[] memory;
 
@@ -19,6 +18,12 @@ public class Memory {
         }
     }
 
+    public void store_8bit(char[] address, char value) throws Exception{
+        store_8bit(Convert.B2I(address),value);
+    }
+
+
+
     //    store a 16bit (2 bytes) value in memory.
     //    first byte will be stored @ address,
     //    and second byte will be stored @ address+1
@@ -31,6 +36,10 @@ public class Memory {
         }
     }
 
+    public void store_16bit(char[] address, char[] value) throws Exception{
+        store_16bit(Convert.B2I(address),value);
+    }
+
     //    return a 8bit (char) value from the given address
     public char load_8bit(int address) throws Exception{
         char value;
@@ -40,6 +49,10 @@ public class Memory {
             throw new Exception("Memory Error: IndexOutOfBoundException");
         }
         return value;
+    }
+
+    public char load_8bit(char[] address) throws Exception{
+        return load_8bit(Convert.B2I(address));
     }
 
     //    return a 16bit (2 chars) value from the given address.
@@ -54,5 +67,9 @@ public class Memory {
             throw new Exception("Memory Error: IndexOutOfBoundException");
         }
         return value;
+    }
+
+    public char[] load_16bit(char[] address) throws Exception{
+        return load_16bit(Convert.B2I(address));
     }
 }
