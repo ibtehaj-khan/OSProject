@@ -31,82 +31,118 @@ public class Registers {
 
 
 
-    public void set_code_base(char[] value){
+    //    //////// Methods for Code Related SP_Regs
 
-    }
+    //    Update the value of Code Base Register
+    public void set_code_base(char[] value){sp_regs[1] = value;}
 
+    //    Fetch the current Value from Code Base Register
     public char[] get_code_base(){
         return sp_regs[1];
     }
 
-    public void set_code_counter(char[] value){
+    //    Update the Value of Code Counter Register
+    public void set_code_counter(char[] value){sp_regs[2] = value;}
 
-    }
-
+    //    Fetch the current Value from Code Counter Register
     public char[] get_code_counter(){
         return sp_regs[2];
     }
 
-    public void increment_code_counter(){
+    //    Increase the Value of Code Counter by 1
+    public void increment_code_counter() throws Exception{
         increment_code_counter(1);
     }
 
-    public void increment_code_counter(int value){
+    //    Increase the Value of Code Counter by value present in parameter value
+    public void increment_code_counter(int value) throws Exception {
+        int counter = Convert.B2I(sp_regs[2]) + value;
+        int limit = Convert.B2I(sp_regs[3]);
 
+        try{
+            sp_regs[2] = Convert.I2B(counter);
+        }catch(Exception e){
+            throw new Exception("SP_Regs Error: Code Counter Overflow");
+        }
+
+        if(limit < counter){
+               throw  new Exception("Execution Error: Code Counter Exceeds Code Limit");
+        }
     }
 
-    public void set_code_limit(char[] value){
+    //    Update the Value of Code Limit Register
+    public void set_code_limit(char[] value){sp_regs[3] = value;}
 
+    //    Fetch the current Value from Code Limit Register
+    public char[] get_code_limit(){return sp_regs[3];}
+
+
+
+    //    //////// Methods for Stack Related SP_Regs
+
+    //    Update the Value of Stack Base Register
+    public void set_stack_base(char[] value){sp_regs[4] = value;}
+
+    //    Fetch the current Value from Stack Base Register
+    public char[] get_stack_base(){return sp_regs[4];}
+
+    //    Fetch the current Value from Stack Counter Register
+    public char[] get_stack_counter(){return sp_regs[5];}
+
+    //    Increment the code counter by value
+    public void increment_stack_counter() throws Exception{
+        int counter = Convert.B2I(sp_regs[5]) + 1;
+        int limit = Convert.B2I(sp_regs[6]);
+
+        try{
+            sp_regs[5] = Convert.I2B(counter);
+        }catch(Exception e){
+            throw new Exception("SP_Regs Error: Stack Counter Overflow");
+        }
+
+        if(limit < counter){
+            throw  new Exception("Execution Error: Stack Counter Exceeds Stack Limit");
+        }
     }
 
-    public char[] get_code_limit(){
-        return sp_regs[3];
+    //    Decrement the code counter by value
+    public void decrement_stack_counter() throws Exception{
+        int counter = Convert.B2I(sp_regs[5]) - 1;
+        int base = Convert.B2I(sp_regs[4]);
+
+        try{
+            sp_regs[5] = Convert.I2B(counter);
+        }catch(Exception e){
+            throw new Exception("SP_Regs Error: Stack Counter Overflow");
+        }
+
+        if(base > counter){
+            throw  new Exception("Execution Error: Stack Counter is below Stack Base");
+        }
     }
 
+    //    Update the Value of Stack Limit Register
+    public void set_stack_limit(char[] value){sp_regs[6] = value;}
 
-
-    public void set_stack_base(char[] value){
-
-    }
-
-    public char[] get_stack_base(){
-        return sp_regs[4];
-    }
-
-    public char[] get_stack_counter(){
-        return sp_regs[5];
-    }
-
-    public void increment_stack_counter(){
-
-    }
-
-    public void decrement_stack_counter(){
-
-    }
-
-    public void set_stack_limit(char[] value){
-
-    }
-
+    //    Fetch the current Value from Stack Limit Register
     public char[] get_stack_limit(){
         return sp_regs[6];
     }
 
 
 
-    public void set_data_base(char[] value){
+    //    //////// Methods for Data Related SP_Regs
 
-    }
+    //    Update the Value of Data Base Register
+    public void set_data_base(char[] value){sp_regs[7] = value;}
 
-    public char[] get_data_base(){
-        return sp_regs[7];
-    }
+    //    Fetch the current Value from Data Base Register
+    public char[] get_data_base(){return sp_regs[7];}
 
-    public void set_data_limit(char[] value){
+    //    Update the Value of Data Limit Register
+    public void set_data_limit(char[] value){sp_regs[8] = value;}
 
-    }
-
+    //    Fetch the current Value from Data Limit Register
     public char[] get_fata_limit(){
         return sp_regs[8];
     }
