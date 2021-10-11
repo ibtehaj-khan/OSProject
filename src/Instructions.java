@@ -1,5 +1,13 @@
 public class Instructions {
 
+    private Memory MEMORY;
+    private Registers REGISTERS;
+
+    public Instructions(Memory memory, Registers registers){
+        this.MEMORY = memory;
+        this.REGISTERS = registers;
+    }
+
     //    //////// Register - Register Instructions ////////
 
     //    Copy R2 Content in R1

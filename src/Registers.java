@@ -29,45 +29,89 @@ public class Registers {
         return value;
     }
 
-    //    store a 16bit (2 chars) value to a sp_reg present @ code
-    public void store_spr(byte code, char[] value) throws Exception {
-        if (code < 16) {
-            if (code == 0) {
-                if (code > 10) {
-                    if(code == 9){
-                        sp_regs[code] = value;
-                    } else {
-                        throw new Exception("SP_Regs Error: Flag Register can't be used for storing values");
-                    }
-                } else {
-                    throw new Exception("SP_Regs Error: R1" + code % 10 + " can't be accessed");
-                }
-            } else {
-                throw new Exception("SP_Regs Error: R0 can't be used for storing value");
-            }
-        } else {
-            throw new Exception("SP_Regs Error: can't access SPR to store value because Register Code is larger than 4bit");
-        }
-    }
-    //    load a 16bit (2 chars) value from a gp_reg present @ code
-    public char[] load_spr(byte code) throws Exception{
-        char[] value;
-        if(code < 16){
-            if(code > 10){
-                if(code == 9){
-                    value = sp_regs[code];
-                } else {
-                    throw new Exception("SP_Regs Error: Flag Register can't be used for loading values");
-                }
 
-            } else {
-                throw new Exception("SP_Regs Error: R1" + code%10+" can't be accessed");
-            }
-        } else {
-            throw new Exception("SP_Regs Error: can't access SPR to load value because Register Code is larger than 4bit");
-        }
-        return value;
+
+    public void set_code_base(char[] value){
+
     }
+
+    public char[] get_code_base(){
+        return sp_regs[1];
+    }
+
+    public void set_code_counter(char[] value){
+
+    }
+
+    public char[] get_code_counter(){
+        return sp_regs[2];
+    }
+
+    public void increment_code_counter(){
+        increment_code_counter(1);
+    }
+
+    public void increment_code_counter(int value){
+
+    }
+
+    public void set_code_limit(char[] value){
+
+    }
+
+    public char[] get_code_limit(){
+        return sp_regs[3];
+    }
+
+
+
+    public void set_stack_base(char[] value){
+
+    }
+
+    public char[] get_stack_base(){
+        return sp_regs[4];
+    }
+
+    public char[] get_stack_counter(){
+        return sp_regs[5];
+    }
+
+    public void increment_stack_counter(){
+
+    }
+
+    public void decrement_stack_counter(){
+
+    }
+
+    public void set_stack_limit(char[] value){
+
+    }
+
+    public char[] get_stack_limit(){
+        return sp_regs[6];
+    }
+
+
+
+    public void set_data_base(char[] value){
+
+    }
+
+    public char[] get_data_base(){
+        return sp_regs[7];
+    }
+
+    public void set_data_limit(char[] value){
+
+    }
+
+    public char[] get_fata_limit(){
+        return sp_regs[8];
+    }
+
+
 
     //    set the flag register from index bit
     public void set_flag(int index, boolean value) throws Exception{
@@ -79,16 +123,6 @@ public class Registers {
             BitSet bits = BitSet.valueOf(b);
             bits.set(index,value);
 
-            // convert the bitset into byte array, then store the value as char
-            sp_regs[9] = Convert.B2C(bits.toByteArray());
-        } else {
-            throw new Exception("SP_Regs Error: IndexOutOfBound Exception @ flag register");
-        }
-    }
-
-    //    set the flag register from bitset
-    public void set_flag(BitSet bits) throws Exception{
-        if(bits.length() >4){
             // convert the bitset into byte array, then store the value as char
             sp_regs[9] = Convert.B2C(bits.toByteArray());
         } else {
@@ -108,6 +142,15 @@ public class Registers {
     public void clear_flags(){
         sp_regs[9][0] = (char) 0;
         sp_regs[9][1] = (char) 0;
+    }
+
+    public void show_all(){
+        System.out.println("GP Registers\t\t\t\tSP Registers");
+        System.out.println("===============\t\t\t\t===============");
+        for(int i = 0; i < 16; i++){
+            System.out.printf("GPR[%d]\t= %5d\t\t\t\t",i,Convert.B2I(gp_regs[i]));
+            System.out.printf("SPR[%d]\t= %5d\n",i,Convert.B2I(sp_regs[i]));
+        }
     }
 
 }
