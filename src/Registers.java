@@ -10,7 +10,7 @@ public class Registers {
     }
 
 //    store a 16bit (2 chars) value to a gp_reg present @ code
-    public void store_gpr(byte code, char[] value) throws Exception{
+    public void store_gpr(char code, char[] value) throws Exception{
         if(code < 16){
             gp_regs[code] = value;
         } else {
@@ -19,7 +19,7 @@ public class Registers {
     }
 
 //    load a 16bit (2 chars) value from a gp_reg present @ code
-    public char[] load_gpr(byte code) throws Exception{
+    public char[] load_gpr(char code) throws Exception{
         char[] value;
         if(code < 16){
             value = gp_regs[code];
@@ -89,19 +89,22 @@ public class Registers {
     //    Fetch the current Value from Stack Counter Register
     public char[] get_stack_counter(){return sp_regs[5];}
 
+    //    Update the Value of Stack Counter Register
+    public void set_stack_counter(char[] value){sp_regs[5] = value;}
+
     //    Increment the code counter by value
     public void increment_stack_counter() throws Exception{
-        int counter = Convert.B2I(sp_regs[5]) + 1;
+        int counter = Convert.B2I(sp_regs[5]);
         int limit = Convert.B2I(sp_regs[6]);
 
-        try{
-            sp_regs[5] = Convert.I2B(counter);
-        }catch(Exception e){
-            throw new Exception("SP_Regs Error: Stack Counter Overflow");
+        if(counter > limit+1){
+            throw  new Exception("Execution Error: Stack Counter Exceeds Stack Limit");
         }
 
-        if(limit < counter){
-            throw  new Exception("Execution Error: Stack Counter Exceeds Stack Limit");
+        try{
+            sp_regs[5] = Convert.I2B(counter + 1);
+        }catch(Exception e){
+            throw new Exception("SP_Regs Error: Stack Counter Overflow");
         }
     }
 
@@ -167,11 +170,19 @@ public class Registers {
     }
 
     //    get value of flag register
-    public BitSet get_flags(){
-        //  Convert char value into byte array
-        byte[] b = Convert.C2B(sp_regs[9]);
+    public boolean get_flags(int index) throws Exception{
+        boolean value;
+        if(index >3){
+            //  Convert char value into byte array
+            byte[] b = Convert.C2B(sp_regs[9]);
 
-        return BitSet.valueOf(b);
+            //  convert the byte array into bitset
+            BitSet bits = BitSet.valueOf(b);
+            value = bits.get(index);
+        } else {
+            throw new Exception("SP_Regs Error: IndexOutOfBound Exception @ flag register");
+        }
+        return value;
     }
 
     //    clear the values of flag register

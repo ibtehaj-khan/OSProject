@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.StringTokenizer;
+
 public class CU {
 
     private Memory MEMORY;
@@ -11,8 +16,64 @@ public class CU {
     }
 
     //    load file data into memory Array and start from the address
-    public void load_program(String filename, char[] address) throws Exception {
+    public int load_program_in_memory(String filename, int address) throws Exception {
+        // File path is passed as parameter
+        try{
+            File file = new File(filename);
 
+            // Note:  Double back quote is to avoid compiler interpret words
+            // like \test as \t (ie. as a escape sequence)
+
+            // Creating an object of BufferedReader class
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            // Declaring a string variable
+            String st;
+            // Condition holds true till there is character in a string
+            int i = address;
+            while ((st = br.readLine()) != null){
+
+                // Read int values as string from file
+                StringTokenizer defaultTokenizer = new StringTokenizer(st);
+
+
+                while(defaultTokenizer.hasMoreTokens()){
+                    //MEMORY.store_8bit(defaultTokenizer.nextToken(), 0);
+                    String token = defaultTokenizer.nextToken();
+                    //  System.out.println(token);
+                    int  Token_int = Integer.parseInt(token);
+                    char Token_ascii = (char) Token_int;
+
+                    MEMORY.store_8bit(i,Token_ascii);
+                    System.out.print(MEMORY.load_8bit(i));
+                    i++;
+                }
+            }
+        // return value of limit
+        return i-1;
+        } catch(Exception e){
+            System.out.println("File "+filename+"not Found");
+        }
+        return -1;
+    }
+
+    // when program is in memory, and set up the registers' data.
+    // runs only once when program is stored in memory
+    public void load_data_in_registers(int base, int limit) throws Exception{
+
+        char[]code_limit =  Convert.I2B(limit);
+        char[]code_base =  Convert.I2B(base);
+
+        char[]stack_limit =  Convert.I2B(limit+50);
+        char[]stack_base =  Convert.I2B(limit+1);
+
+        REGISTERS.set_code_limit(code_limit);
+        REGISTERS.set_code_base(code_base);
+        REGISTERS.set_code_counter(code_base);
+
+        REGISTERS.set_stack_base(stack_base);
+        REGISTERS.set_stack_limit(stack_limit);
+        REGISTERS.set_stack_counter(stack_base);
     }
 
     //    Start loading and Executing instructions
@@ -32,13 +93,13 @@ public class CU {
             }
 
             // Execute the instruction
-            execute_instruction(opcode);
+            decode_instruction(opcode);
         }
         REGISTERS.show_all();
     }
 
-    //    Identify the instruction from opcode, then run it and update the program counter
-    public void execute_instruction(char opcode) throws Exception{
+    //    decode the instruction from opcode, then run it and update the program counter
+    public void decode_instruction(char opcode) throws Exception{
         // get address from program counter
         int address = Convert.B2I(REGISTERS.get_code_counter());
 
@@ -48,11 +109,11 @@ public class CU {
             char R1 = MEMORY.load_8bit(address + 1);
             char R2 = MEMORY.load_8bit(address + 2);
 
-            // Run Instruction
-            run(opcode, R1, R2);
-
             // Update the Program Counter
             REGISTERS.increment_code_counter(3);
+
+            // Run Instruction
+            run(opcode, R1, R2);
         }
 
         // Register - Immediate Instructions
@@ -61,6 +122,9 @@ public class CU {
             char R1 = MEMORY.load_8bit(address + 1);
             char[] imm = MEMORY.load_16bit(address + 2);
 
+            // Update the Program Counter
+            REGISTERS.increment_code_counter(4);
+
             if(opcode %16 >= 0 && opcode %16 < 7){
                 // Run Register-Immediate Instruction
                 run(opcode, R1, imm);
@@ -68,9 +132,6 @@ public class CU {
                 // Run Jump Instructions
                 run(opcode, imm);
             }
-
-            // Update the Program Counter
-            REGISTERS.increment_code_counter(4);
         }
 
         // Memory Instructions
@@ -79,11 +140,11 @@ public class CU {
             char R1 = MEMORY.load_8bit(address + 1);
             char[] imm = MEMORY.load_16bit(address + 2);
 
-            // Run Instruction
-            runM(opcode, R1, imm);
-
             // Update the Program Counter
             REGISTERS.increment_code_counter(4);
+
+            // Run Instruction
+            runM(opcode, R1, imm);
         }
 
         // Single Operand Instructions
@@ -91,20 +152,20 @@ public class CU {
             // Fetch Values from Memory
             char R1 = MEMORY.load_8bit(address + 1);
 
-            // Run Instruction
-            run(opcode, R1);
-
             // Update the Program Counter
             REGISTERS.increment_code_counter(2);
+
+            // Run Instruction
+            run(opcode, R1);
         }
 
         // No Operand Instructions
         else if(opcode / 16 == 15){
-            // Run Instruction
-            run(opcode);
-
             // Update the Program Counter
             REGISTERS.increment_code_counter(1);
+
+            // Run Instruction
+            run(opcode);
         }
         else {
             throw new Exception("CPU Error: Couldn't execute opcode " + opcode);
@@ -170,7 +231,7 @@ public class CU {
     }
 
     //    Run the Jump Instructions
-    public void run(char opcode, char[] imm){
+    public void run(char opcode, char[] imm) throws Exception {
         switch(opcode%16){
             case 7:
                 INSTRUCTIONS.BZ(imm);
@@ -213,7 +274,7 @@ public class CU {
     }
 
     //    Run the Single Operand Instructions
-    public void run(char opcode, char R1){
+    public void run(char opcode, char R1) throws Exception {
         switch(opcode%16){
             case 1:
                 INSTRUCTIONS.SHL(R1);
@@ -245,7 +306,7 @@ public class CU {
     }
 
     //    Run the No Operand Instructions
-    public void run(char opcode){
+    public void run(char opcode) throws Exception {
         switch(opcode%16){
             case 1:
                 INSTRUCTIONS.RETURN();
