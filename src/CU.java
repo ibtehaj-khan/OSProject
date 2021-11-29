@@ -45,7 +45,6 @@ public class CU {
                     char Token_ascii = (char) Token_int;
 
                     MEMORY.store_8bit(i,Token_ascii);
-                    System.out.print(MEMORY.load_8bit(i));
                     i++;
                 }
             }
