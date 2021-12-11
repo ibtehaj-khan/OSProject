@@ -1,17 +1,17 @@
-public class PCB {
-    //  each parameter must be pointing towards memory
-    private char[] PID;
-    private char[] Priority;
-    private char[] Size;
-    private char[] FileName;
-    private char[] GPRegs;
-    private char[] SPRegs;
-    private char[] CodePageTable;
-    private char[] DataPageTable;
-    private char[] WaitingTime;
-    private char[] ExecutionTime;
+import java.util.ArrayList;
 
-    public PCB(char[] PID, char[] Priority, char[] FileName, char[] Size){
+public class PCB {
+    private char[] PID;
+    private char Priority;
+    private int Size;
+    private String FileName;
+    private char[][] GPRegs;
+    private char[][] SPRegs;
+    private ArrayList<Integer> PageTable;
+    private int WaitingTime;
+    private int ExecutionTime;
+
+    public PCB(char[] PID, char Priority, String FileName, int Size){
         this.PID = PID;
         this.Priority = Priority;
         this.FileName = FileName;
@@ -22,59 +22,52 @@ public class PCB {
         return PID;
     }
 
-    public char[] getPriority() {
+    public char getPriority() {
         return Priority;
     }
 
-    public char[] getFileName() {
+    public String getFileName() {
         return FileName;
     }
 
-    public char[] getGPRegs() {
+    public char[][] getGPRegs() {
         return GPRegs;
     }
 
-    public void setGPRegs(char[] GPRegs) {
+    public void setGPRegs(char[][] GPRegs) {
         this.GPRegs = GPRegs;
     }
 
-    public char[] getSPRegs() {
+    public char[][] getSPRegs() {
         return SPRegs;
     }
 
-    public void setSPRegs(char[] SPRegs) {
+    public void setSPRegs(char[][] SPRegs) {
         this.SPRegs = SPRegs;
     }
 
-    public char[] getCodePageTable() {
-        return CodePageTable;
+    public ArrayList<Integer> getPageTable() {
+        return PageTable;
     }
 
-    public void setCodePageTable(char[] codePageTable) {
-        CodePageTable = codePageTable;
+    public void AddPage(int page) {
+        PageTable.add(page);
     }
 
-    public char[] getDataPageTable() {
-        return DataPageTable;
-    }
-
-    public void setDataPageTable(char[] dataPageTable) {
-        DataPageTable = dataPageTable;
-    }
-
-    public char[] getWaitingTime() {
+    public int getWaitingTime() {
         return WaitingTime;
     }
 
-    public void setWaitingTime(char[] waitingTime) {
+    public void setWaitingTime(int waitingTime) {
         WaitingTime = waitingTime;
     }
 
-    public char[] getExecutionTime() {
+    public int getExecutionTime() {
+
         return ExecutionTime;
     }
 
-    public void setExecutionTime(char[] executionTime) {
+    public void setExecutionTime(int executionTime) {
         ExecutionTime = executionTime;
     }
 }

@@ -1,15 +1,11 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.StringTokenizer;
-
 public class CU {
-    private MMU MemoryUnit;
+    // Classes simulating Hardware Components inside a CPU
+    private PMMU MemoryUnit;
     private Registers REGISTERS;
     private Instructions INSTRUCTIONS;
 
     public CU(){
-        this.MemoryUnit = new MMU();
+        this.MemoryUnit = new PMMU();
         this.REGISTERS = new Registers();
         this.INSTRUCTIONS = new Instructions(this.MemoryUnit,this.REGISTERS);
     }
