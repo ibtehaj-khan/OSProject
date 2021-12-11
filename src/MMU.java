@@ -43,6 +43,7 @@ public class MMU {
     }
 
 
+
     //////////////    MEMORY READ APIs    //////////////
     public char read_8bit(char[] logical) throws Exception {
         char[] physical = Logical2PhysicalAddress(logical);
@@ -64,5 +65,30 @@ public class MMU {
         char[] address = Convert.I2B(logical);
         char[] physical = Logical2PhysicalAddress(address);
         return memory.load_16bit(physical);
+    }
+
+
+
+    //////////////    MEMORY WRITE APIs    //////////////
+    public void write_8bit(char[] logical, char value) throws Exception {
+        char[] physical = Logical2PhysicalAddress(logical);
+        memory.store_8bit(physical,value);
+    }
+
+    public void write_8bit(int logical, char value) throws Exception {
+        char[] address = Convert.I2B(logical);
+        char[] physical = Logical2PhysicalAddress(address);
+        memory.store_8bit(physical,value);
+    }
+
+    public void write_16bit(char[] logical, char[] value) throws Exception {
+        char[] physical = Logical2PhysicalAddress(logical);
+        memory.store_16bit(physical,value);
+    }
+
+    public void write_16bit(int logical, char[] value) throws Exception {
+        char[] address = Convert.I2B(logical);
+        char[] physical = Logical2PhysicalAddress(address);
+        memory.store_16bit(physical,value);
     }
 }
