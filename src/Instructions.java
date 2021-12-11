@@ -1,12 +1,12 @@
 public class Instructions {
 
-    private MMU MemoryUnit;
+    private PMMU MemoryUnit;
     private Registers REGISTERS;
     private ArithmeticUnit ALU;
     private final int MAX_VALUE_16 = (int) Math.pow(2,16);
 
 
-    public Instructions(MMU MemoryUnit, Registers registers){
+    public Instructions(PMMU MemoryUnit, Registers registers){
         this.MemoryUnit = MemoryUnit;
         this.REGISTERS = registers;
         this.ALU = new ArithmeticUnit();

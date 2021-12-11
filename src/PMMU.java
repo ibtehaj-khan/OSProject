@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 
-//  Memory Management Unit
-public class MMU {
+//  Paged Memory Management Unit
+public class PMMU {
     private int pagingBits = 9;
     private int offsetBits = 7;
     private Memory memory;
     private ArrayList<Integer> PageTable;
 
-    public MMU(){
+    public PMMU(){
         this.memory = new Memory();
         this.PageTable = new ArrayList<Integer>();
     }
