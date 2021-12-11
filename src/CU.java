@@ -4,10 +4,19 @@ public class CU {
     private Registers REGISTERS;
     private Instructions INSTRUCTIONS;
 
+    // Classes simulating OS Components
+    private ProgramLoader ProgramLoader;
+    private MemoryManager MemoryManager;
+    private ProcessScheduler ProcessScheduler;
+
     public CU(){
         this.MemoryUnit = new PMMU();
         this.REGISTERS = new Registers();
         this.INSTRUCTIONS = new Instructions(this.MemoryUnit,this.REGISTERS);
+
+        this.MemoryManager = new MemoryManager(this.MemoryUnit);
+        this.ProgramLoader = new ProgramLoader(this.MemoryManager);
+        this.ProcessScheduler = new ProcessScheduler();
     }
 
     //    Start loading and Executing instructions
