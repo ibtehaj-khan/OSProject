@@ -1,15 +1,15 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 //  Paged Memory Management Unit
 public class PMMU {
     private int pagingBits = 9;
     private int offsetBits = 7;
     private Memory memory;
-    private ArrayList<Integer> PageTable;
+    private LinkedList<Integer> PageTable;
 
     public PMMU(){
         this.memory = new Memory();
-        this.PageTable = new ArrayList<Integer>();
+        this.PageTable = new LinkedList<Integer>();
     }
 
     public void clearPageTable(){
@@ -17,7 +17,7 @@ public class PMMU {
     }
 
     public void addPages(int page){
-        PageTable.add(page);
+        PageTable.addLast(page);
     }
 
     private char[] Logical2PhysicalAddress(char[] logical) throws Exception{

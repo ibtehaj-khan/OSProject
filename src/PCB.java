@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class PCB {
     private char[] PID;
@@ -7,7 +7,7 @@ public class PCB {
     private String FileName;
     private char[][] GPRegs;
     private char[][] SPRegs;
-    private ArrayList<Integer> PageTable;
+    private LinkedList<Integer> PageTable;
     private int WaitingTime;
     private int ExecutionTime;
 
@@ -46,7 +46,7 @@ public class PCB {
         this.SPRegs = SPRegs;
     }
 
-    public ArrayList<Integer> getPageTable() {
+    public LinkedList<Integer> getPageTable() {
         return PageTable;
     }
 
