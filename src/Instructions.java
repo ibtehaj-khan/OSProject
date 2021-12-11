@@ -1,13 +1,13 @@
 public class Instructions {
 
-    private Memory MEMORY;
+    private MMU MemoryUnit;
     private Registers REGISTERS;
     private ArithmeticUnit ALU;
     private final int MAX_VALUE_16 = (int) Math.pow(2,16);
 
 
-    public Instructions(Memory memory, Registers registers){
-        this.MEMORY = memory;
+    public Instructions(MMU MemoryUnit, Registers registers){
+        this.MemoryUnit = MemoryUnit;
         this.REGISTERS = registers;
         this.ALU = new ArithmeticUnit();
     }
@@ -548,7 +548,7 @@ public class Instructions {
                 // Push value here
                 char[] counter = REGISTERS.get_code_counter();
                 char[] address = REGISTERS.get_stack_counter();
-                MEMORY.store_16bit(address,counter);
+                MemoryUnit.write_16bit(address,counter);
                 REGISTERS.increment_stack_counter();
 
                 // jump to the value
@@ -777,7 +777,7 @@ public class Instructions {
 
         try{
             REGISTERS.increment_stack_counter();    // check if stack has space, else throw error
-            MEMORY.store_16bit(address,value);  // store value @ address we got from stack
+            MemoryUnit.write_16bit(address,value);  // store value @ address we got from stack
         } catch(Exception e){
             throw new Exception("Execution Error: Stack Overflow");
         }
@@ -789,7 +789,7 @@ public class Instructions {
         char[] address = REGISTERS.get_stack_counter(); // get current address from stack
         try{
             REGISTERS.decrement_stack_counter();    // check if stack has data, else throw error
-            value = MEMORY.load_16bit(address); // load value from address we got from stack
+            value = MemoryUnit.read_16bit(address); // load value from address we got from stack
             REGISTERS.store_gpr(R1,value);  // load value in register
         } catch(Exception e){
             throw new Exception("Execution Error: Stack is Empty");
@@ -804,7 +804,7 @@ public class Instructions {
         char[] address = REGISTERS.get_stack_counter(); // get current address from stack
         try{
             REGISTERS.decrement_stack_counter();    // check if stack has data, else throw error
-            value = MEMORY.load_16bit(address); // load value from address we got from stack
+            value = MemoryUnit.read_16bit(address); // load value from address we got from stack
             REGISTERS.set_code_counter(value);  // load value in code counter
         } catch(Exception e){
             throw new Exception("Execution Error: Stack is Empty");
