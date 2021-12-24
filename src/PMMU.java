@@ -16,8 +16,16 @@ public class PMMU {
         PageTable.clear();
     }
 
-    public void addPages(int page){
+    public void addPage(int page){
         PageTable.addLast(page);
+    }
+
+    public void addPages(LinkedList<Integer> pages){
+        this.PageTable.addAll(pages);
+    }
+
+    public LinkedList<Integer> getPageTable() {
+        return PageTable;
     }
 
     private char[] Logical2PhysicalAddress(char[] logical) throws Exception{

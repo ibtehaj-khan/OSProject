@@ -11,11 +11,10 @@ public class PCB {
     private int WaitingTime;
     private int ExecutionTime;
 
-    public PCB(char[] PID, char Priority, String FileName, int Size){
+    public PCB(char[] PID, char Priority, String FileName){
         this.PID = PID;
         this.Priority = Priority;
         this.FileName = FileName;
-        this.Size = Size;
     }
 
     public char[] getPID() {
@@ -51,7 +50,7 @@ public class PCB {
     }
 
     public void AddPage(int page) {
-        PageTable.add(page);
+        PageTable.addLast(page);
     }
 
     public int getWaitingTime() {
@@ -69,5 +68,13 @@ public class PCB {
 
     public void setExecutionTime(int executionTime) {
         ExecutionTime = executionTime;
+    }
+
+    public int getSize() {
+        return Size;
+    }
+
+    public void setSize(int size) {
+        Size = size;
     }
 }
