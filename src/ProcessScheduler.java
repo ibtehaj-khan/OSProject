@@ -2,6 +2,9 @@
 import java.util.LinkedList;
 
 public class ProcessScheduler {
+
+
+    private PMMU MemoryUnit;
     private MemoryManager MemoryManager;
     private LinkedList<PCB> HPReadyQueue;
     private LinkedList<PCB> LPReadyQueue;
@@ -9,14 +12,15 @@ public class ProcessScheduler {
     private Registers REGISTERS;
     private int lastQuanta = 0;
 
-    public ProcessScheduler(MemoryManager MemoryManager, Registers registers) {
+    public ProcessScheduler(PMMU memoryUnit, MemoryManager MemoryManager, Registers registers) {
+
+        this.REGISTERS = registers;
+        this.MemoryUnit = memoryUnit;
         this.MemoryManager = MemoryManager;
 
         HPReadyQueue = new LinkedList<PCB>();
         LPReadyQueue = new LinkedList<PCB>();
         RunningQueue = new LinkedList<PCB>();
-
-        this.REGISTERS = registers;
 
     }
 
@@ -40,6 +44,8 @@ public class ProcessScheduler {
             // PC in Low Priority queue are FIFO
             LPReadyQueue.addLast(pcb);
         }
+
+        System.out.println("Process Added: " + pcb);
     }
 
 
@@ -54,12 +60,16 @@ public class ProcessScheduler {
             pcb = RunningQueue.removeFirst();
             REGS2PCB(pcb);
 
+
             // set accounting information
             pcb.setExecutionTime(lastQuanta);
             AddWaitingTime(lastQuanta);
 
             // add process to ready queue
             AddProcess(pcb);
+
+            // remove pages info from PMMU
+            MemoryUnit.clearPageTable();
         }
 
         if(!HPReadyQueue.isEmpty()){
@@ -83,6 +93,9 @@ public class ProcessScheduler {
         // move the registers to cpu from pcb
         PCB2REGS(pcb);
 
+        // add page table to PMMU
+        MemoryUnit.addPages(pcb.getPageTable());
+
         // return time slice to run
         return quanta;
     }
@@ -99,9 +112,10 @@ public class ProcessScheduler {
 
         // deallocate memory pages
         LinkedList<Integer> PageTable = pcb.getPageTable();
+        MemoryManager.clearPages(PageTable);
 
         // print pcb
-
+        System.out.println("PCB Terminated: " + pcb);
     }
 
 

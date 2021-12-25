@@ -17,7 +17,7 @@ public class CU {
         this.INSTRUCTIONS = new Instructions(this.MemoryUnit,this.REGISTERS);
 
         this.MemoryManager = new MemoryManager();
-        this.ProcessScheduler = new ProcessScheduler(this.MemoryManager,this.REGISTERS);
+        this.ProcessScheduler = new ProcessScheduler(this.MemoryUnit,this.MemoryManager,this.REGISTERS);
         this.ProgramLoader = new ProgramLoader(this.MemoryUnit,this.MemoryManager,this.ProcessScheduler);
     }
 
