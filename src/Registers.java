@@ -200,4 +200,19 @@ public class Registers {
         }
     }
 
+    public char[][] getGp_regs() {
+        return gp_regs;
+    }
+
+    public void setGp_regs(char[][] gp_regs) {
+        this.gp_regs = gp_regs;
+    }
+
+    public char[][] getSp_regs() {
+        return sp_regs;
+    }
+
+    public void setSp_regs(char[][] sp_regs) {
+        this.sp_regs = sp_regs;
+    }
 }

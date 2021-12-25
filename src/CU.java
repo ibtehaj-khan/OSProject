@@ -1,3 +1,5 @@
+import java.util.Date;
+
 public class CU {
     // Classes simulating Hardware Components inside a CPU
     private PMMU MemoryUnit;
@@ -15,28 +17,45 @@ public class CU {
         this.INSTRUCTIONS = new Instructions(this.MemoryUnit,this.REGISTERS);
 
         this.MemoryManager = new MemoryManager();
-        this.ProcessScheduler = new ProcessScheduler(this.MemoryUnit,this.REGISTERS);
+        this.ProcessScheduler = new ProcessScheduler(this.MemoryManager,this.REGISTERS);
         this.ProgramLoader = new ProgramLoader(this.MemoryUnit,this.MemoryManager,this.ProcessScheduler);
     }
 
     //    Start loading and Executing instructions
-    public void run_program() throws Exception {
+    public void execute() {
         char opcode;
         char[] counter;
-        while(true){
-            // get the program counter
-            counter = REGISTERS.get_code_counter();
+        boolean stopCPU = false;
+        boolean stopProcess;
+        while(!stopCPU){
+            int quanta = ProcessScheduler.NextProcess();
+            long timeToStop = System.currentTimeMillis() + quanta;
 
-            // load the opcode from memory
-            opcode = MemoryUnit.read_8bit(counter);
+            stopProcess = false;
 
-            // Check if opcode is for terminate program
-            if(opcode == 243){
-               break;
+            if(quanta == -1){
+                stopCPU = true;
             }
 
-            // Execute the instruction
-            decode_instruction(opcode);
+            while((timeToStop <= System.currentTimeMillis()) && (!stopProcess)){
+                try{
+                    // get the program counter
+                    counter = REGISTERS.get_code_counter();
+
+                    // load the opcode from memory
+                    opcode = MemoryUnit.read_8bit(counter);
+
+                    // Execute the instruction
+                    decode_instruction(opcode);
+                }
+                // terminate process if got any error or request
+                catch(Exception e){
+                    int timeSpent = quanta - (int)(timeToStop - System.currentTimeMillis());
+                    stopProcess = true;
+                    System.out.println(e.getMessage());
+                    ProcessScheduler.TerminateProcess(timeSpent);
+                }
+            }
         }
         REGISTERS.show_all();
     }
@@ -256,6 +275,9 @@ public class CU {
                 break;
             case 2:
                 INSTRUCTIONS.NOOP();
+                break;
+            case 3:
+                INSTRUCTIONS.END();
                 break;
             default:
                 break;

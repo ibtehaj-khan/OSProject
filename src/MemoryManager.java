@@ -32,4 +32,8 @@ public class MemoryManager {
     public void clearPage(int page){
         FreeTable.addLast(page);
     }
+
+    public void clearPages(LinkedList<Integer> pages){
+        FreeTable.addAll(pages);
+    }
 }
