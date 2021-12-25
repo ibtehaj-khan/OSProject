@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class PCB {
@@ -53,6 +54,10 @@ public class PCB {
         PageTable.addLast(page);
     }
 
+    public void addPages(LinkedList<Integer> pages){
+        PageTable.addAll(pages);
+    }
+
     public int getWaitingTime() {
         return WaitingTime;
     }
@@ -76,5 +81,21 @@ public class PCB {
 
     public void setSize(int size) {
         Size = size;
+    }
+
+    @Override
+    public String toString() {
+        String output = "PCB{" +
+                "PID=" + Arrays.toString(PID) +
+                ", Priority=" + Priority +
+                ", Size=" + Size +
+                ", FileName='" + FileName + '\'' +
+                ", PageTable=" + PageTable +
+                ", WaitingTime=" + WaitingTime +
+                ", ExecutionTime=" + ExecutionTime +
+                ", GPRegs=" + Arrays.toString(GPRegs) +
+                ", SPRegs=" + Arrays.toString(SPRegs) +
+                '}';
+        return output;
     }
 }
