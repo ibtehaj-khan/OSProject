@@ -45,7 +45,7 @@ public class ProcessScheduler {
             LPReadyQueue.addLast(pcb);
         }
 
-        System.out.println("Process Added: " + pcb);
+        System.out.println("Process Added:\n" + pcb.getFileName());
     }
 
 
@@ -95,6 +95,8 @@ public class ProcessScheduler {
 
         // add page table to PMMU
         MemoryUnit.addPages(pcb.getPageTable());
+        RunningQueue.add(pcb);
+        System.out.println("Scheduled Process is: \n" + pcb.getFileName() + "\n");
 
         // return time slice to run
         return quanta;

@@ -40,7 +40,7 @@ public class PMMU {
         try{
             page = PageTable.get(index);
         } catch(Exception e){
-            throw new Exception("Virtual Address is outside allowed paging space");
+            throw new Exception("Virtual Address {"+index+"} is outside allowed paging space {" + PageTable+"}");
         }
         //  generate physical address
 

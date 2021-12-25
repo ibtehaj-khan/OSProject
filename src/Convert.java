@@ -13,7 +13,7 @@ public class Convert {
                 throw new Exception("Conversion Error: Int value is greater than 2^16-1");
             }
         } else {
-            throw new Exception("Conversion Error: Int value is negative");
+            throw new Exception("Conversion Error: value is negative{" + value+"}");
         }
         return b;
     }

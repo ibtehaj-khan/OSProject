@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.File;
+import java.io.*;
 import java.util.LinkedList;
 
 public class ProgramLoader {
@@ -16,17 +14,15 @@ public class ProgramLoader {
 
     public void loadFile(String filename) throws Exception {
         //  read file, or else throw a file not found exception
-        try{
             // clear paging history from PMMU
             MemoryUnit.clearPageTable();
 
-            File FileObj = new File(filename);
-            FileReader READER = new FileReader(FileObj);
-            BufferedReader BUFFER = new BufferedReader(READER);
+            System.out.println("Loading File " + filename);
+            DataInputStream BUFFER = new DataInputStream(new BufferedInputStream(new FileInputStream( filename )));
 
             //  read meta data to create a process
             char priority = (char) BUFFER.read();
-            if(priority > 0 && priority < 31){
+            if(priority < 0 | priority > 31){
                 throw new Exception("Invalid Priority");
             }
 
@@ -43,25 +39,35 @@ public class ProgramLoader {
 
             //  Allocate Pages to store data
             LinkedList<Integer> dataPages = MemoryManager.getPages(dataSize/128);
-            MemoryUnit.addPages(dataPages);
 
-            char bytevalue;
-            int byteseeker, codeSize = 0;
             int data_base, data_limit;
             data_base = 0;
+
+            data_limit = ((dataSize/128) * 128) - 1;
+            if(data_limit == -1){
+                data_limit += 128;
+                int page = MemoryManager.getPage();
+                dataPages.add(page);
+                MemoryUnit.addPage(page);
+            }
+
+            MemoryUnit.addPages(dataPages);
+
+            int bytevalue;
+            int byteseeker, codeSize = 0;
+
 
             //  for loop to read data segment
             for(byteseeker = 0; byteseeker < dataSize; byteseeker++){
                 bytevalue = (char) BUFFER.read();
-                MemoryUnit.write_8bit(byteseeker,bytevalue);
+                MemoryUnit.write_8bit(byteseeker,(char)bytevalue);
             }
-            data_limit = (dataSize * 128) - 1;
 
             int code_base, code_counter,code_limit;
             code_base = data_limit + 1;
 
             byteseeker = code_base;
-            bytevalue = (char) BUFFER.read();
+            bytevalue = BUFFER.read();
 
             LinkedList<Integer> codePages = new LinkedList<Integer>();
             //  while loop to read code segment
@@ -75,8 +81,8 @@ public class ProgramLoader {
                 }
 
                 codeSize++;
-                MemoryUnit.write_8bit(byteseeker++,bytevalue);
-                bytevalue = (char) BUFFER.read();
+                MemoryUnit.write_8bit(byteseeker++,(char)bytevalue);
+                bytevalue = BUFFER.read();
             }
             code_counter = code_base;
             code_limit = (codePages.size()*128) - 1;
@@ -119,8 +125,6 @@ public class ProgramLoader {
 
             ProcessScheduler.AddProcess(pcb);
 
-        } catch(Exception e){
-            throw new Exception("File Not Found");
-        }
+
     }
 }

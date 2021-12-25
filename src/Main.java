@@ -3,23 +3,42 @@
 //  Mohammad Ahsan Siddiqui - 18076
 //  Abdullah Tahir - 14050
 
+import java.io.*;
+
 public class Main {
     public static void main(String[] args) throws Exception {
-        CU CU = new CU();
 
-        // program name
-        String filename = "C:\\Users\\ibteh\\IdeaProjects\\OS_Project\\src\\p1.txt";
+        CU CPU = new CU();
+        String dirname = "C:\\Users\\ibteh\\IdeaProjects\\OS_Project\\src\\demo_files";
 
-        // address where program should start
-        int base = 5000;
 
-        // load program in memory, and return the address
-        int limit = CU.load_program_in_memory(filename,base);
-
-        // when program is in memory, then registers should have data for the program
-        CU.load_data_in_registers(base,limit);
+        RunFilesFromDirectory(dirname, CPU);
 
         // Run program i.e. cpu will start processing instruction
-        CU.run_program();
+         CPU.execute();
+
+//        readFile("C:\\Users\\ibteh\\IdeaProjects\\OS_Project\\src\\demo_files\\noop");
+    }
+
+    public static void RunFilesFromDirectory(String dirname, CU CPU) throws Exception{
+
+            File dir = new File(dirname);
+            for (File file : dir.listFiles()) {
+//                System.out.println(file.getPath());
+                CPU.loadProgram(file.getPath());
+//                readFile(file.getPath());
+
+            }
+
+    }
+
+    public static void readFile(String filename) throws Exception {
+        DataInputStream BUFFER = new DataInputStream(new BufferedInputStream(new FileInputStream( filename ) ) );
+        int value = 0;
+        int counter = 0;
+        while(value != -1){
+            value = BUFFER.read();
+            System.out.println(counter++ + ")\t\t" + value);
+        }
     }
 }

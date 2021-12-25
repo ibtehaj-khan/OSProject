@@ -16,6 +16,7 @@ public class PCB {
         this.PID = PID;
         this.Priority = Priority;
         this.FileName = FileName;
+        PageTable = new LinkedList<Integer>();
     }
 
     public char[] getPID() {
@@ -86,16 +87,18 @@ public class PCB {
     @Override
     public String toString() {
         String output = "PCB{" +
-                "PID=" + Arrays.toString(PID) +
-                ", Priority=" + Priority +
+                "PID=" + Convert.B2I(PID) +
+                ", Priority=" + (int)Priority +
                 ", Size=" + Size +
-                ", FileName='" + FileName + '\'' +
-                ", PageTable=" + PageTable +
-                ", WaitingTime=" + WaitingTime +
-                ", ExecutionTime=" + ExecutionTime +
-                ", GPRegs=" + Arrays.toString(GPRegs) +
-                ", SPRegs=" + Arrays.toString(SPRegs) +
-                '}';
+                "\nFileName='" + FileName + '\'' +
+                "\nPageTable=" + PageTable +
+                "\nWaitingTime=\t" + WaitingTime +
+                ", ExecutionTime=\t" + ExecutionTime + "\n";
+
+        for(int i = 0; i < 16; i++){
+            output += "GPR["+i+"]\t" + Convert.B2I(GPRegs[i]) +"\t\ttSPR["+i+"] \t" +  Convert.B2I(SPRegs[i]) + "\n";
+        }
+
         return output;
     }
 }

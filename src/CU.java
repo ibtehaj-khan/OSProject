@@ -26,18 +26,15 @@ public class CU {
         char opcode;
         char[] counter;
         boolean stopCPU = false;
-        boolean stopProcess;
         while(!stopCPU){
             int quanta = ProcessScheduler.NextProcess();
             long timeToStop = System.currentTimeMillis() + quanta;
-
-            stopProcess = false;
 
             if(quanta == -1){
                 stopCPU = true;
             }
 
-            while((timeToStop <= System.currentTimeMillis()) && (!stopProcess)){
+            while(timeToStop <= System.currentTimeMillis()){
                 try{
                     // get the program counter
                     counter = REGISTERS.get_code_counter();
@@ -51,13 +48,17 @@ public class CU {
                 // terminate process if got any error or request
                 catch(Exception e){
                     int timeSpent = quanta - (int)(timeToStop - System.currentTimeMillis());
-                    stopProcess = true;
                     System.out.println(e.getMessage());
                     ProcessScheduler.TerminateProcess(timeSpent);
+                    break;
                 }
             }
         }
         REGISTERS.show_all();
+    }
+
+    public void loadProgram(String filename) throws Exception{
+        ProgramLoader.loadFile(filename);
     }
 
     //    decode the instruction from opcode, then run it and update the program counter
@@ -130,7 +131,7 @@ public class CU {
             run(opcode);
         }
         else {
-            throw new Exception("CPU Error: Couldn't execute opcode " + opcode);
+            throw new Exception("CPU Error: Couldn't execute opcode " + (int)opcode);
         }
     }
 
