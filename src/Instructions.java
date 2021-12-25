@@ -571,13 +571,37 @@ public class Instructions {
     //    Load the value from memory present at offset and save that into R1.
     //    Throws error if base/limit is crossed
     public void MOVL(char R1, char[] imm) throws Exception{
+        int base = Convert.B2I(REGISTERS.get_data_base());
+        int limit = Convert.B2I(REGISTERS.get_data_limit());
+        int offset = Convert.B2I(imm);
 
+        int address = base + offset;
+
+        if(address > limit){
+            throw new Exception("Data address out of bound");
+        }
+
+        char[] value = MemoryUnit.read_16bit(address);
+
+        REGISTERS.store_gpr(R1,value);
     }
 
     //    store R1 value into the Memory.
     //    Throws error if base/limit is crossed
     public void MOVS(char R1, char[] imm) throws Exception{
+        int base = Convert.B2I(REGISTERS.get_data_base());
+        int limit = Convert.B2I(REGISTERS.get_data_limit());
+        int offset = Convert.B2I(imm);
 
+        int address = base + offset;
+
+        if(address > limit){
+            throw new Exception("Data address out of bound");
+        }
+
+        char[] value = REGISTERS.load_gpr(R1);
+
+        MemoryUnit.write_16bit(address, value);
     }
 
     //    //////// Single Operand Instructions ////////
@@ -814,5 +838,10 @@ public class Instructions {
     //    No Operation
     public void NOOP(){
 
+    }
+
+    //    End the program
+    public void END() throws Exception{
+        throw new Exception("Program Call to Terminate");
     }
 }

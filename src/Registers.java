@@ -146,7 +146,7 @@ public class Registers {
     public void set_data_limit(char[] value){sp_regs[8] = value;}
 
     //    Fetch the current Value from Data Limit Register
-    public char[] get_fata_limit(){
+    public char[] get_data_limit(){
         return sp_regs[8];
     }
 
