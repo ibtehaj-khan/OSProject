@@ -46,7 +46,7 @@ public class ProgramLoader {
             MemoryUnit.addPages(dataPages);
 
             char bytevalue;
-            int byteseeker;
+            int byteseeker, codeSize = 0;
             int data_base, data_limit;
             data_base = 0;
 
@@ -62,31 +62,38 @@ public class ProgramLoader {
 
             byteseeker = code_base;
             bytevalue = (char) BUFFER.read();
-            int codePagesCount = 0;
 
+            LinkedList<Integer> codePages = new LinkedList<Integer>();
             //  while loop to read code segment
             while(bytevalue != -1){
                 if(byteseeker % 128 == 0){
-                    MemoryUnit.addPage(MemoryManager.getPage());
-                    codePagesCount++;
+
+                    int page = MemoryManager.getPage();
+
+                    MemoryUnit.addPage(page);
+                    codePages.addLast(page);
                 }
+
+                codeSize++;
                 MemoryUnit.write_8bit(byteseeker++,bytevalue);
                 bytevalue = (char) BUFFER.read();
             }
             code_counter = code_base;
-            code_limit = (codePagesCount*128) - 1;
+            code_limit = (codePages.size()*128) - 1;
 
             // create stack
-            int stack_base,stack_counter, stack_limit;
+            int stack_base,stack_counter, stack_limit, stackSize = 50;
             stack_base = byteseeker;
 
-            if((code_limit - stack_base) < 50){
-                MemoryUnit.addPage(MemoryManager.getPage());
+            if((code_limit - stack_base) < stackSize){
+                int page = MemoryManager.getPage();
+                MemoryUnit.addPage(page);
+                codePages.addLast(page);
                 code_limit += 128;
             }
 
             stack_counter = stack_base;
-            stack_limit = stack_base + 50;
+            stack_limit = stack_base + stackSize;
 
             char[][] SP_REGS = new char[16][2];
             SP_REGS[0] = Convert.I2B(0);
@@ -106,8 +113,11 @@ public class ProgramLoader {
 
             pcb.setGPRegs(new char[16][2]);
             pcb.setSPRegs(SP_REGS);
+            pcb.setSize(dataSize + codeSize + stackSize);
+            pcb.addPages(dataPages);
+            pcb.addPages(codePages);
 
-
+            ProcessScheduler.AddProcess(pcb);
 
         } catch(Exception e){
             throw new Exception("File Not Found");
